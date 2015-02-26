@@ -1,0 +1,74 @@
+<project name="Web Application" default="package" basedir=".">
+
+   <property file="${basedir}/build.properties"/>
+   <property file="build.properties"/>
+
+   <path id="classpath">
+	<fileset dir="WebContent/WEB-INF/lib">
+	    <include name="*.jar"/>
+	</fileset>
+   </path>
+   
+   <target name="init">
+	<tstamp/>
+   </target>
+
+   <target name="clean" description="deletes the web app war directory and web archive file">
+   <echo message="${user.home}"/>
+	<echo message="deleting app.name war directory and web archive file..."/>
+	<delete dir="${basedir}/war"/>
+	<delete file="${basedir}/${app.name}.war"/>
+   </target>
+   
+   <target name="prepare" description="creates the web app war directory" depends="clean,init">
+	<echo message="creates application name war directory..."/>
+	<mkdir dir="${basedir}/war"/>
+	<mkdir dir="${basedir}/war/WEB-INF"/>
+	<mkdir dir="${basedir}/war/WEB-INF/classes"/>
+	<mkdir dir="${basedir}/war/WEB-INF/lib"/>
+   </target>
+
+   <target name="build" description="builds the web apllication" depends="prepare">
+	<echo message="building appl name......"/>
+	<javac srcdir="${basedir}/src" destdir="${basedir}/war/WEB-INF/classes">
+	     <include name="**/*.java"/>
+	     <classpath refid="classpath"/>
+        </javac>
+	<copy todir="${basedir}/war/WEB-INF">
+	     <fileset dir="${basedir}/WebContent/WEB-INF">
+
+				<include name="web.xml"/>
+	          <include name="dispatcher-servlet"/>
+             </fileset>
+        </copy>
+
+	<copy todir="${basedir}/war">
+	     <fileset dir="${basedir}/WebContent">
+	          <include name="**/*.*"/>
+          </fileset>
+	</copy>
+	<copy todir="{basedir}/war/META-INF">
+	     <fileset dir=".">
+	           <include name="context.xml"/>
+              </fileset>
+	</copy>
+	
+	<copy todir="${basedir}/war/jsp">
+	       <fileset dir="${basedir}/WebContent">
+	          <include name="**/**"/>
+               </fileset>
+         </copy>
+    </target>
+
+    <target name="package" description="packages the webappl web archive file" depends="build">
+         <echo message="packaging the ${app.name} web archive file....."/>
+	 <delete file="${basedir}/${app.name}.war"/>
+	 <war destfile="${app.name}.war" webxml="WebContent/WEB-INF/web.xml">
+	 <lib dir="WebContent/WEB-INF"/>
+	               <classes dir="${basedir}\war\WEB-INF\classes"/>
+          </war>
+	<delete dir="${basedir}/war"/>
+    </target>
+
+
+</project>
