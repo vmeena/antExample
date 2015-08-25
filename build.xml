@@ -61,7 +61,7 @@
     </target>
 
     <target name="package" description="packages the webappl web archive file" depends="build">
-         <echo message="packaging the ${app.name} web archive file....."/>
+         <echo message="updating the dispaly message ? how its made ------ packaging the ${app.name} web archive file....."/>
 	 <delete file="${basedir}/${app.name}.war"/>
 	 <war destfile="${app.name}.war" webxml="WebContent/WEB-INF/web.xml">
 	 <lib dir="WebContent/WEB-INF"/>
